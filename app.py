@@ -14,15 +14,15 @@ def chat(payload: dict):
     try:
         credential = DefaultAzureCredential()
 
-        # 🔑 IMPORTANT: Foundry requires this scope
         def token_provider():
-            token = credential.get_token("https://ai.azure.com/.default")
-            return token.token
+            return credential.get_token(
+                "https://ai.azure.com/.default"
+            ).token
 
         client = AzureOpenAI(
             azure_endpoint=os.getenv("AZURE_AI_PROJECT_ENDPOINT"),
-            azure_ad_token_provider=token_provider,
-            api_version="2024-05-01-preview"
+            azure_ad_token_provider=token_provider
+            # ✅ NO api_version here
         )
 
         completion = client.chat.completions.create(
