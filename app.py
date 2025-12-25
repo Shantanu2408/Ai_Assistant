@@ -22,7 +22,7 @@ def chat(payload: dict):
         client = AzureOpenAI(
             azure_endpoint=os.getenv("AZURE_AI_PROJECT_ENDPOINT"),
             azure_ad_token_provider=token_provider,
-            api_version="2024-02-15-preview"
+            api_version="2024-05-01-preview"
         )
 
         completion = client.chat.completions.create(
