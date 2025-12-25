@@ -21,18 +21,16 @@ def chat(payload: dict):
 
         client = AzureOpenAI(
             azure_endpoint=os.getenv("AZURE_AI_PROJECT_ENDPOINT"),
-            azure_ad_token_provider=token_provider
+            azure_ad_token_provider=token_provider,
+            api_version="2024-06-01"   # ✅ FORCE VERSION
         )
 
-        # 🔥 FOUNDARY PROJECTS USE RESPONSES API
         response = client.responses.create(
             model=os.getenv("AZURE_OPENAI_DEPLOYMENT"),
             input=payload["message"]
         )
 
-        return {
-            "response": response.output_text
-        }
+        return {"response": response.output_text}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
