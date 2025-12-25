@@ -12,17 +12,19 @@ def health():
 @app.post("/chat")
 def chat(payload: dict):
     try:
-        # 1. Get Azure AD token via Managed Identity
         credential = DefaultAzureCredential()
 
-        # 2. Create Foundry OpenAI client (NO API KEY)
+        # 🔑 IMPORTANT: Foundry requires this scope
+        def token_provider():
+            token = credential.get_token("https://ai.azure.com/.default")
+            return token.token
+
         client = AzureOpenAI(
-            azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-            azure_ad_token_provider=credential.get_token,
+            azure_endpoint=os.getenv("AZURE_AI_PROJECT_ENDPOINT"),
+            azure_ad_token_provider=token_provider,
             api_version="2024-02-15-preview"
         )
 
-        # 3. Call your GPT-5 deployment
         completion = client.chat.completions.create(
             model=os.getenv("AZURE_OPENAI_DEPLOYMENT"),
             messages=[
