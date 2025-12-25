@@ -22,18 +22,16 @@ def chat(payload: dict):
         client = AzureOpenAI(
             azure_endpoint=os.getenv("AZURE_AI_PROJECT_ENDPOINT"),
             azure_ad_token_provider=token_provider
-            # ✅ NO api_version here
         )
 
-        completion = client.chat.completions.create(
+        # 🔥 FOUNDARY PROJECTS USE RESPONSES API
+        response = client.responses.create(
             model=os.getenv("AZURE_OPENAI_DEPLOYMENT"),
-            messages=[
-                {"role": "user", "content": payload["message"]}
-            ]
+            input=payload["message"]
         )
 
         return {
-            "response": completion.choices[0].message.content
+            "response": response.output_text
         }
 
     except Exception as e:
